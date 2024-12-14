@@ -102,10 +102,20 @@ const index = {
     }
     let isDialog = null;
     Vue.prototype.$Dialog = function(compName, props, callback, config2 = {}) {
+      let vm = null;
       if (isDialog)
         return;
-      let vm = Vue.extend(compName);
-      let contentComp = new vm();
+      if (!compName)
+        throw new Error("No pop-up content passed in");
+      if (typeof compName == "string") {
+        vm = Vue.extend({
+          template: compName
+        });
+      } else if (typeof compName == "object") {
+        vm = Vue.extend(compName);
+      } else {
+        throw new Error("Please enter a valid value");
+      }
       let selfConfig = Object.assign(DialogConfig, config2);
       let attrs = {
         attrs: selfConfig
@@ -149,7 +159,7 @@ const index = {
           }, [selfConfig.closeBtnText]), h(Button, {
             "on": {
               "click": () => {
-                handleSure(callback, contentComp);
+                handleSure(callback, this);
               }
             },
             "attrs": {
@@ -176,7 +186,8 @@ const index = {
       }, 500);
     }
     function handleSure(fn, vm) {
-      fn && fn(vm, handleClose);
+      let compVm = vm.$children[0].$children[2];
+      fn && fn(compVm, handleClose);
     }
   }
 };

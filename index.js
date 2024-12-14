@@ -19,9 +19,18 @@ export default {
     }
     let isDialog = null;
     Vue.prototype.$Dialog = function (compName, props, callback, config = {}) {
+      let vm =null
       if (isDialog) return 
-      let vm = Vue.extend(compName)
-      let contentComp = new vm()
+      if (!compName) throw new Error('No pop-up content passed in'); 
+      if (typeof compName == 'string') {
+        vm = Vue.extend({
+          template: compName
+        })
+      } else if (typeof compName == 'object') {
+        vm = Vue.extend(compName)
+      } else {
+        throw new Error('Please enter a valid value'); 
+      }
       let selfConfig = Object.assign(DialogConfig, config)
       let attrs = { attrs:selfConfig }
       const ElDialog = Vue.extend({
@@ -40,7 +49,7 @@ export default {
               })}
               <div slot="footer">
                 <Button onClick={() => { handleClose() }} size={selfConfig.floorBtnSize}>{selfConfig.closeBtnText}</Button>
-                <Button onClick={() => { handleSure(callback, contentComp) }} size={selfConfig.floorBtnSize} type={'primary'}>{ selfConfig.sureBtnText}</Button>
+                <Button onClick={() => { handleSure(callback, this) }} size={selfConfig.floorBtnSize} type={'primary'}>{ selfConfig.sureBtnText}</Button>
               </div>
               </Dialog>
           )
@@ -63,7 +72,8 @@ export default {
       },500) 
     }
     function handleSure(fn, vm) {
-      fn && fn(vm,handleClose)
+      let compVm = vm.$children[0].$children[2]
+      fn && fn(compVm,handleClose)
     }
   }
 }
