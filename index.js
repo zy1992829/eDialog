@@ -23,6 +23,7 @@ export default {
       let vm = Vue.extend(compName)
       let contentComp = new vm()
       let selfConfig = Object.assign(DialogConfig, config)
+      let attrs = { attrs:selfConfig }
       const ElDialog = Vue.extend({
       
         data() {
@@ -33,7 +34,7 @@ export default {
         render(h) {
           return (
             <Dialog v-drag visible={this.visible} title={config.title || '标题'} width={config.width || '50%'}
-            {...selfConfig}  onClose={() => { handleClose() }} >
+              {...attrs}  onClose={() => { handleClose() }} >
               { h(vm,{
                 props
               })}

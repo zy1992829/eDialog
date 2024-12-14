@@ -32,5 +32,13 @@
   },
   "volta": {
     "node": "18.14.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zy1992829/eDialog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zy1992829/eDialog/issues"
+  },
+  "homepage": "https://github.com/zy1992829/eDialog#readme"
 }
