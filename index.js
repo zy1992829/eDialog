@@ -12,7 +12,8 @@ export default {
       floorBtnSize: 'small',
       sureBtnText: '确定',
       closeBtnText: '关闭',
-      draggable:true
+      draggable: true,
+      isBtn:true
     }, config)
     if (DialogConfig.draggable) {
       Vue.directive('drag', drag)
@@ -32,7 +33,9 @@ export default {
         throw new Error('Please enter a valid value'); 
       }
       let selfConfig = Object.assign(DialogConfig, config)
-      let attrs = { attrs:selfConfig }
+      let attrs = { attrs: selfConfig }
+      
+      const footer = config.footer
       const ElDialog = Vue.extend({
       
         data() {
@@ -42,14 +45,23 @@ export default {
         },
         render(h) {
           return (
-            <Dialog v-drag visible={this.visible} title={config.title || '标题'} width={config.width || '50%'}
+            <Dialog v-drag visible={this.visible} title={selfConfig.title || '标题'} width={selfConfig.width || '50%'}
               {...attrs}  onClose={() => { handleClose() }} >
               { h(vm,{
                 props
               })}
               <div slot="footer">
-                <Button onClick={() => { handleClose() }} size={selfConfig.floorBtnSize}>{selfConfig.closeBtnText}</Button>
-                <Button onClick={() => { handleSure(callback, this) }} size={selfConfig.floorBtnSize} type={'primary'}>{ selfConfig.sureBtnText}</Button>
+                {
+                  footer && footer(h,handleClose)
+                }
+                {
+                  selfConfig.isBtn ? (
+                    <div>
+                    <Button onClick={() => { handleClose() }} size={selfConfig.floorBtnSize}>{selfConfig.closeBtnText}</Button>
+                    <Button onClick={() => { handleSure(callback, this) }} size={selfConfig.floorBtnSize} type={'primary'}>{ selfConfig.sureBtnText}</Button>
+                    </div>
+                  ) : (<span></span>)
+                }
               </div>
               </Dialog>
           )
